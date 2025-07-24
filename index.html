@@ -154,22 +154,33 @@
             };
             
             // Configurar login
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                
-                // Validar credenciales
-                if (username === FIXED_CREDENTIALS.username && password === FIXED_CREDENTIALS.password) {
-                    authError.style.display = 'none';
-                    // Redirigir al dashboard
-                    window.location.href = "dashboard.html";
-                } else {
-                    authError.style.display = 'block';
-                }
-            });
-        });
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const authError = document.getElementById('authError');
+    
+    // Credenciales fijas
+    const FIXED_CREDENTIALS = {
+        username: "super",
+        password: "credito"
+    };
+    
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        if (username === FIXED_CREDENTIALS.username && password === FIXED_CREDENTIALS.password) {
+            authError.style.display = 'none';
+            // Guardar sesión en localStorage (persistente)
+            localStorage.setItem('isAuthenticated', 'true');
+            // Redirigir correctamente
+            window.location.href = 'dashboard.html';
+        } else {
+            authError.style.display = 'block';
+        }
+    });
+});
     </script>
 </body>
 </html>
