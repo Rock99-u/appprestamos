@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Préstamos</title>
+    <title>Clientes - Sistema de Préstamos</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -23,45 +23,138 @@
             background-color: var(--revolut-gray);
             color: var(--revolut-black);
             margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            padding: 0;
             touch-action: manipulation;
         }
         
-        .auth-container, .form-container {
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Desplegable */
+        .sidebar {
+            width: 250px;
+            background-color: var(--revolut-white);
+            box-shadow: var(--revolut-box-shadow);
+            padding: 20px 0;
+            transition: all 0.3s;
+        }
+        
+        .logo {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+        
+        .logo h2 {
+            color: var(--revolut-blue);
+            margin: 0;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .nav-item {
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+        
+        .nav-item:hover {
+            background-color: var(--revolut-light-blue);
+        }
+        
+        .nav-item.active {
+            background-color: var(--revolut-light-blue);
+            border-left: 3px solid var(--revolut-blue);
+        }
+        
+        .nav-item i {
+            margin-right: 10px;
+            color: var(--revolut-dark-gray);
+        }
+        
+        .submenu {
+            list-style: none;
+            padding-left: 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .submenu.show {
+            max-height: 500px; /* Ajusta según necesidad */
+        }
+        
+        .submenu .nav-item {
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+        
+        .menu-toggle {
+            display: none;
+            position: absolute;
+            right: 15px;
+            transition: transform 0.3s;
+        }
+        
+        .menu-toggle.rotate {
+            transform: rotate(90deg);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: var(--revolut-blue);
+            margin: 0;
+        }
+        
+        .btn-primary {
+            background-color: var(--revolut-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Formulario de Cliente */
+        .form-container {
             background-color: var(--revolut-white);
             border-radius: var(--revolut-border-radius);
             box-shadow: var(--revolut-box-shadow);
             padding: 30px;
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        .form-container {
-            max-width: 500px;
+            max-width: 600px;
+            margin: 0 auto;
             display: none; /* Oculto inicialmente */
         }
         
-        .form-header, .auth-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .form-header h1, .auth-header h1 {
-            color: var(--revolut-blue);
-            font-weight: 600;
-            font-size: 24px;
-            margin: 0;
-        }
-        
-        .form-group, .auth-group {
+        .form-group {
             margin-bottom: 20px;
         }
         
-        .form-group label, .auth-group label {
+        .form-group label {
             display: block;
             font-size: 14px;
             font-weight: 500;
@@ -69,7 +162,7 @@
             margin-bottom: 8px;
         }
         
-        .form-control, .auth-control {
+        .form-control {
             width: 100%;
             padding: 12px 16px;
             border: 1px solid #E0E4E8;
@@ -80,388 +173,350 @@
             box-sizing: border-box;
         }
         
-        .form-control:focus, .auth-control:focus {
+        .form-control:focus {
             outline: none;
             border-color: var(--revolut-blue);
             box-shadow: 0 0 0 2px var(--revolut-light-blue);
         }
         
-        .btn, .auth-btn {
-            background-color: var(--revolut-blue);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 14px 24px;
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
+        /* Tabla de Clientes */
+        .clients-table {
             width: 100%;
-            transition: background-color 0.2s ease;
+            border-collapse: collapse;
+            background-color: var(--revolut-white);
+            border-radius: var(--revolut-border-radius);
+            box-shadow: var(--revolut-box-shadow);
+            overflow: hidden;
         }
         
-        .btn:hover, .auth-btn:hover {
-            background-color: var(--revolut-dark-blue);
-        }
-        
-        .form-footer, .auth-footer {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 12px;
-            color: var(--revolut-dark-gray);
-        }
-        
-        .currency-input {
-            position: relative;
-        }
-        
-        .currency-input span {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
+        .clients-table th {
+            text-align: left;
+            padding: 15px;
             color: var(--revolut-dark-gray);
             font-weight: 500;
-        }
-        
-        .currency-input input {
-            padding-left: 30px;
-        }
-        
-        .percentage-input {
-            position: relative;
-        }
-        
-        .percentage-input span {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--revolut-dark-gray);
-            font-weight: 500;
-        }
-        
-        .percentage-input input {
-            padding-right: 30px;
-        }
-        
-        .readonly-field {
             background-color: var(--revolut-gray);
-            color: var(--revolut-dark-gray);
         }
         
-        .input-hint {
+        .clients-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
             font-size: 12px;
-            color: var(--revolut-dark-gray);
-            margin-top: 4px;
+            font-weight: 500;
+            display: inline-block;
         }
         
-        .error-message {
-            color: #FF3B30;
-            font-size: 12px;
-            margin-top: 4px;
-            display: none;
+        .status-badge.active {
+            background-color: #E5F8F2;
+            color: #00A76F;
         }
         
-        .auth-error {
+        .status-badge.overdue {
+            background-color: #FFEEED;
             color: #FF3B30;
-            text-align: center;
-            margin-bottom: 15px;
-            display: none;
+        }
+        
+        .status-badge.inactive {
+            background-color: #E0E4E8;
+            color: #6B7785;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -250px;
+                height: 100vh;
+                z-index: 100;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Pantalla de Login -->
-    <div class="auth-container" id="authContainer">
-        <div class="auth-header">
-            <h1>Iniciar Sesión</h1>
+    <div class="app-container">
+        <!-- Sidebar Desplegable -->
+        <div class="sidebar" id="sidebar">
+            <div class="logo" onclick="toggleSidebar()">
+                <h2>Préstamos</h2>
+                <span class="menu-toggle">›</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item" onclick="location.href='dashboard.html'">
+                    <i>📊</i> Dashboard
+                </li>
+                <li class="nav-item" onclick="location.href='prestamos.html'">
+                    <i>📝</i> Nuevo Préstamo
+                </li>
+                <li class="nav-item menu-parent active" onclick="toggleSubmenu(this)">
+                    <i>👥</i> Clientes
+                    <span class="menu-toggle">›</span>
+                    <ul class="submenu show">
+                        <li class="nav-item" onclick="location.href='clientes.html'">
+                            Lista de Clientes
+                        </li>
+                        <li class="nav-item" onclick="showClientForm()">
+                            Nuevo Cliente
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <i>⚙️</i> Configuración
+                </li>
+            </ul>
         </div>
         
-        <div class="auth-error" id="authError">
-            Credenciales incorrectas. Intente nuevamente.
-        </div>
-        
-        <form id="loginForm">
-            <div class="auth-group">
-                <label for="username">Usuario</label>
-                <input type="text" id="username" class="auth-control" placeholder="Ingrese su usuario" required>
-            </div>
-            
-            <div class="auth-group">
-                <label for="password">Contraseña</label>
-                <input type="password" id="password" class="auth-control" placeholder="Ingrese su contraseña" required>
-            </div>
-            
-            <button type="submit" class="auth-btn">Ingresar</button>
-        </form>
-        
-        <div class="auth-footer">
-            Sistema de gestión de préstamos
-        </div>
-    </div>
-    
-    <!-- Formulario de Préstamos (oculto inicialmente) -->
-    <div class="form-container" id="formContainer">
-        <div class="form-header">
-            <h1>Nuevo Préstamo</h1>
-        </div>
-        
-        <form id="loanForm">
-            <div class="form-group">
-                <label for="clientName">Nombre del Cliente</label>
-                <input type="text" id="clientName" class="form-control" placeholder="Ingrese el nombre completo" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="saleDate">Fecha de venta</label>
-                <input type="date" id="saleDate" class="form-control" required>
-                <div class="input-hint">Fecha en que se realizó el préstamo (puede ser en el pasado)</div>
-            </div>
-            
-            <div class="form-group">
-                <label for="dueDate">Vencimiento</label>
-                <input type="date" id="dueDate" class="form-control" required>
-                <div class="input-hint">Fecha de pago del préstamo</div>
-                <div class="error-message" id="dueDateError">La fecha de vencimiento debe ser posterior a la fecha de venta</div>
-            </div>
-            
-            <div class="form-group">
-                <label for="loanAmount">Monto de préstamo</label>
-                <div class="currency-input">
-                    <span>₲</span>
-                    <input type="text" id="loanAmount" class="form-control" placeholder="500.000" required>
-                </div>
-                <div class="input-hint">Ingrese el monto sin decimales (ej: 1.000.000)</div>
-                <div class="error-message" id="loanAmountError">Ingrese un monto válido</div>
-            </div>
-            
-            <div class="form-group">
-                <label for="interestRate">Interés (%)</label>
-                <div class="percentage-input">
-                    <input type="number" id="interestRate" class="form-control" placeholder="0" step="0.1" min="0" required>
-                    <span>%</span>
-                </div>
-                <div class="error-message" id="interestRateError">Ingrese un porcentaje válido</div>
-            </div>
-            
-            <div class="form-group">
-                <label for="totalAmount">Total a Pagar</label>
-                <div class="currency-input">
-                    <span>₲</span>
-                    <input type="text" id="totalAmount" class="form-control readonly-field" placeholder="0" readonly>
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Clientes</h1>
+                <div>
+                    <button class="btn-primary" onclick="showClientForm()">
+                        + Nuevo Cliente
+                    </button>
                 </div>
             </div>
             
-            <div class="form-group">
-                <label for="termDays">Plazo (En Días)</label>
-                <input type="number" id="termDays" class="form-control readonly-field" placeholder="0" readonly>
+            <!-- Formulario de Cliente (Oculto inicialmente) -->
+            <div class="form-container" id="clientForm">
+                <form id="clientFormData">
+                    <div class="form-group">
+                        <label for="fullName">Nombre completo</label>
+                        <input type="text" id="fullName" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ci">CI</label>
+                        <input type="text" id="ci" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Teléfono</label>
+                        <input type="tel" id="phone" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">Dirección</label>
+                        <input type="text" id="address" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="city">Ciudad</label>
+                        <input type="text" id="city" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="references">Referencias</label>
+                        <textarea id="references" class="form-control" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Mail</label>
+                        <input type="email" id="email" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="economicData">Datos económicos</label>
+                        <textarea id="economicData" class="form-control" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="observations">Observaciones</label>
+                        <textarea id="observations" class="form-control" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="creationDate">Fecha de creación</label>
+                        <input type="date" id="creationDate" class="form-control" required>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Guardar Cliente</button>
+                    <button type="button" class="btn-primary" style="background-color: var(--revolut-dark-gray); margin-top: 10px;" onclick="hideClientForm()">
+                        Cancelar
+                    </button>
+                </form>
             </div>
             
-            <button type="submit" class="btn">Registrar Préstamo</button>
-        </form>
-        
-        <div class="form-footer">
-            Sistema seguro de registro de préstamos
+            <!-- Tabla de Clientes -->
+            <table class="clients-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>CI</th>
+                        <th>Teléfono</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="clientsTableBody">
+                    <!-- Datos se cargarán dinámicamente -->
+                </tbody>
+            </table>
         </div>
     </div>
 
     <script>
+        // Función para mostrar/ocultar el sidebar en móviles
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+            
+            const toggles = document.querySelectorAll('.menu-toggle');
+            toggles.forEach(toggle => {
+                if (toggle !== event.target) {
+                    toggle.classList.toggle('rotate');
+                }
+            });
+        }
+        
+        // Función para mostrar/ocultar submenús
+        function toggleSubmenu(element) {
+            const submenu = element.querySelector('.submenu');
+            const toggle = element.querySelector('.menu-toggle');
+            
+            submenu.classList.toggle('show');
+            toggle.classList.toggle('rotate');
+        }
+        
+        // Mostrar formulario de cliente
+        function showClientForm() {
+            document.getElementById('clientForm').style.display = 'block';
+            // Establecer fecha actual por defecto
+            document.getElementById('creationDate').valueAsDate = new Date();
+        }
+        
+        // Ocultar formulario de cliente
+        function hideClientForm() {
+            document.getElementById('clientForm').style.display = 'none';
+            document.getElementById('clientFormData').reset();
+        }
+        
+        // Datos de ejemplo (luego vendrán de Firebase)
+        const clientsData = [
+            {
+                id: 1,
+                fullName: "Juan Pérez",
+                ci: "1234567",
+                phone: "0981122334",
+                status: "active",
+                loans: 2
+            },
+            {
+                id: 2,
+                fullName: "María Gómez",
+                ci: "7654321",
+                phone: "0975544332",
+                status: "overdue",
+                loans: 1
+            },
+            {
+                id: 3,
+                fullName: "Carlos Rojas",
+                ci: "4567890",
+                phone: "0998877665",
+                status: "inactive",
+                loans: 0
+            }
+        ];
+        
+        // Renderizar tabla de clientes
+        function renderClientsTable() {
+            const tableBody = document.getElementById('clientsTableBody');
+            tableBody.innerHTML = '';
+            
+            clientsData.forEach(client => {
+                const statusText = {
+                    'active': 'Activo',
+                    'overdue': 'Moroso',
+                    'inactive': 'Inactivo'
+                }[client.status];
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${client.fullName}</td>
+                    <td>${client.ci}</td>
+                    <td>${client.phone}</td>
+                    <td><span class="status-badge ${client.status}">${statusText}</span></td>
+                    <td>
+                        <button class="action-btn view" onclick="viewClient(${client.id})">Ver</button>
+                        <button class="action-btn edit" onclick="editClient(${client.id})">Editar</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // Ver cliente
+        function viewClient(id) {
+            const client = clientsData.find(c => c.id === id);
+            alert(`Detalles del cliente:\nNombre: ${client.fullName}\nCI: ${client.ci}\nTeléfono: ${client.phone}`);
+        }
+        
+        // Editar cliente
+        function editClient(id) {
+            const client = clientsData.find(c => c.id === id);
+            // Aquí llenarías el formulario con los datos del cliente
+            showClientForm();
+            document.getElementById('fullName').value = client.fullName;
+            document.getElementById('ci').value = client.ci;
+            document.getElementById('phone').value = client.phone;
+            // ... llenar otros campos
+        }
+        
+        // Guardar cliente
+        document.getElementById('clientFormData').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newClient = {
+                id: clientsData.length + 1,
+                fullName: document.getElementById('fullName').value,
+                ci: document.getElementById('ci').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                references: document.getElementById('references').value,
+                email: document.getElementById('email').value,
+                economicData: document.getElementById('economicData').value,
+                observations: document.getElementById('observations').value,
+                creationDate: document.getElementById('creationDate').value,
+                status: "active",
+                loans: 0
+            };
+            
+            clientsData.push(newClient);
+            renderClientsTable();
+            hideClientForm();
+            alert("Cliente guardado exitosamente");
+        });
+        
+        // Inicializar
         document.addEventListener('DOMContentLoaded', function() {
-            // Elementos del login
-            const authContainer = document.getElementById('authContainer');
-            const formContainer = document.getElementById('formContainer');
-            const loginForm = document.getElementById('loginForm');
-            const authError = document.getElementById('authError');
+            renderClientsTable();
             
-            // Elementos del formulario de préstamos
-            const loanForm = document.getElementById('loanForm');
-            const saleDate = document.getElementById('saleDate');
-            const dueDate = document.getElementById('dueDate');
-            const loanAmount = document.getElementById('loanAmount');
-            const interestRate = document.getElementById('interestRate');
-            const totalAmount = document.getElementById('totalAmount');
-            const termDays = document.getElementById('termDays');
-            
-            // Elementos de error
-            const dueDateError = document.getElementById('dueDateError');
-            const loanAmountError = document.getElementById('loanAmountError');
-            const interestRateError = document.getElementById('interestRateError');
-            
-            // Configurar login
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                
-                // Credenciales válidas
-                if (username === "super" && password === "credito") {
-                    authError.style.display = 'none';
-                    authContainer.style.display = 'none';
-                    formContainer.style.display = 'block';
-                } else {
-                    authError.style.display = 'block';
-                }
-            });
-            
-            // Función para cerrar teclado al tocar fuera
-            function setupDismissKeyboard() {
-                document.addEventListener('touchstart', function(e) {
-                    if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
-                        if (document.activeElement && document.activeElement.blur) {
-                            document.activeElement.blur();
-                        }
+            // Cerrar teclado al tocar fuera de inputs
+            document.addEventListener('click', function(e) {
+                if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
+                    if (document.activeElement && document.activeElement.blur) {
+                        document.activeElement.blur();
                     }
-                });
-                
-                document.addEventListener('mousedown', function(e) {
-                    if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
-                        if (document.activeElement && document.activeElement.blur) {
-                            document.activeElement.blur();
-                        }
-                    }
-                });
-            }
-            
-            // Inicializar función de cierre de teclado
-            setupDismissKeyboard();
-            
-            // Formatear número con separador de miles
-            function formatNumber(num) {
-                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            }
-            
-            // Convertir string formateado a número
-            function parseFormattedNumber(str) {
-                return parseInt(str.replace(/\./g, '')) || 0;
-            }
-            
-            // Calcular días entre fechas
-            function calculateDaysBetweenDates(startDate, endDate) {
-                const oneDay = 24 * 60 * 60 * 1000;
-                const start = new Date(startDate);
-                const end = new Date(endDate);
-                return Math.round(Math.abs((end - start) / oneDay));
-            }
-            
-            // Calcular total a pagar
-            function calculateTotal() {
-                const amount = parseFormattedNumber(loanAmount.value);
-                const rate = parseFloat(interestRate.value) || 0;
-                const interest = Math.round(amount * (rate / 100));
-                const total = amount + interest;
-                totalAmount.value = formatNumber(total);
-            }
-            
-            // Calcular plazo en días
-            function calculateTermDays() {
-                if (saleDate.value && dueDate.value) {
-                    const startDate = new Date(saleDate.value);
-                    const endDate = new Date(dueDate.value);
-                    
-                    if (endDate < startDate) {
-                        dueDateError.style.display = 'block';
-                        termDays.value = '';
-                        return;
-                    } else {
-                        dueDateError.style.display = 'none';
-                    }
-                    
-                    const days = calculateDaysBetweenDates(saleDate.value, dueDate.value);
-                    termDays.value = days;
-                } else {
-                    termDays.value = '';
                 }
-            }
-            
-            // Validar fechas
-            function validateDates() {
-                const saleDateValue = new Date(saleDate.value);
-                const dueDateValue = new Date(dueDate.value);
-                
-                if (dueDate.value && saleDate.value && dueDateValue < saleDateValue) {
-                    dueDateError.style.display = 'block';
-                } else {
-                    dueDateError.style.display = 'none';
-                }
-                
-                calculateTermDays();
-            }
-            
-            // Formatear input de monto mientras se escribe
-            loanAmount.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/[^\d]/g, '');
-                
-                if (value) {
-                    value = parseInt(value).toString();
-                    value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                }
-                
-                e.target.value = value;
-                
-                if (value && parseFormattedNumber(value) <= 0) {
-                    loanAmountError.style.display = 'block';
-                } else {
-                    loanAmountError.style.display = 'none';
-                }
-                
-                calculateTotal();
             });
-            
-            // Validar tasa de interés
-            interestRate.addEventListener('input', function() {
-                if (interestRate.value && parseFloat(interestRate.value) < 0) {
-                    interestRateError.style.display = 'block';
-                } else {
-                    interestRateError.style.display = 'none';
-                }
-                calculateTotal();
-            });
-            
-            // Event listeners para fechas
-            saleDate.addEventListener('change', validateDates);
-            dueDate.addEventListener('change', validateDates);
-            
-            // Configurar evento de envío del formulario
-            loanForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                validateDates();
-                calculateTotal();
-                
-                const errors = document.querySelectorAll('.error-message[style="display: block;"]');
-                if (errors.length > 0) {
-                    alert('Por favor corrija los errores antes de enviar');
-                    return;
-                }
-                
-                const loanData = {
-                    clientName: document.getElementById('clientName').value,
-                    saleDate: saleDate.value,
-                    dueDate: dueDate.value,
-                    loanAmount: parseFormattedNumber(loanAmount.value),
-                    interestRate: parseFloat(interestRate.value),
-                    totalAmount: parseFormattedNumber(totalAmount.value),
-                    termDays: parseInt(termDays.value),
-                    createdAt: new Date().toISOString()
-                };
-                
-                console.log('Datos para Firebase:', loanData);
-                alert(`Préstamo registrado correctamente:
-Cliente: ${loanData.clientName}
-Monto: ₲${formatNumber(loanData.loanAmount)}
-Total a pagar: ₲${formatNumber(loanData.totalAmount)}
-Plazo: ${loanData.termDays} días`);
-                
-                loanForm.reset();
-                totalAmount.value = '';
-                termDays.value = '';
-            });
-            
-            // Inicializar cálculos
-            calculateTotal();
-            calculateTermDays();
         });
     </script>
 </body>
