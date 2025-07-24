@@ -1,70 +1,175 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style/style.css">
-  <meta charset="UTF-8">
-  <title>Registro de Préstamos</title>
-  <!-- SDK de Firebase (compat) -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Préstamos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --revolut-blue: #0075FF;
+            --revolut-dark-blue: #0065E0;
+            --revolut-light-blue: #E5F1FF;
+            --revolut-gray: #F5F7FA;
+            --revolut-dark-gray: #6B7785;
+            --revolut-black: #1A1A1A;
+            --revolut-white: #FFFFFF;
+            --revolut-border-radius: 12px;
+            --revolut-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--revolut-gray);
+            color: var(--revolut-black);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .auth-container {
+            background-color: var(--revolut-white);
+            border-radius: var(--revolut-border-radius);
+            box-shadow: var(--revolut-box-shadow);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .auth-header h1 {
+            color: var(--revolut-blue);
+            font-weight: 600;
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        .auth-group {
+            margin-bottom: 20px;
+        }
+        
+        .auth-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--revolut-dark-gray);
+            margin-bottom: 8px;
+        }
+        
+        .auth-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #E0E4E8;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+        
+        .auth-control:focus {
+            outline: none;
+            border-color: var(--revolut-blue);
+            box-shadow: 0 0 0 2px var(--revolut-light-blue);
+        }
+        
+        .auth-btn {
+            background-color: var(--revolut-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 24px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s ease;
+        }
+        
+        .auth-btn:hover {
+            background-color: var(--revolut-dark-blue);
+        }
+        
+        .auth-footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--revolut-dark-gray);
+        }
+        
+        .auth-error {
+            color: #FF3B30;
+            text-align: center;
+            margin-bottom: 15px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <h2>Formulario de Préstamos</h2>
-  <form id="loanForm">
-    <label>Nombre:</label><br>
-    <input type="text" id="nombre"><br><br>
-    <label>Monto (Gs):</label><br>
-    <input type="number" id="monto"><br><br>
-    <label>Plazo (días):</label><br>
-    <input type="number" id="plazo"><br><br>
-    <button type="submit">Registrar Préstamo</button>
-  </form>
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1>Iniciar Sesión</h1>
+        </div>
+        
+        <div class="auth-error" id="authError">
+            Credenciales incorrectas. Intente nuevamente.
+        </div>
+        
+        <form id="loginForm">
+            <div class="auth-group">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" class="auth-control" placeholder="Ingrese su usuario" required>
+            </div>
+            
+            <div class="auth-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" class="auth-control" placeholder="Ingrese su contraseña" required>
+            </div>
+            
+            <button type="submit" class="auth-btn">Ingresar</button>
+        </form>
+        
+        <div class="auth-footer">
+            Sistema de gestión de préstamos
+        </div>
+    </div>
 
-  <script>
-    // Configuración Firebase (tu config real)
-    const firebaseConfig = {
-      apiKey: "AIzaSyBjiS_ufHJ_QPwb1IrBiWake2yTKy7AxM0",
-      authDomain: "ultracreditos-eae1a.firebaseapp.com",
-      databaseURL: "https://ultracreditos-eae1a-default-rtdb.firebaseio.com",
-      projectId: "ultracreditos-eae1a",
-      storageBucket: "ultracreditos-eae1a.appspot.com",
-      messagingSenderId: "860734814765",
-      appId: "1:860734814765:web:0a8fc3d00b0d76eaeb16a4"
-    };
-
-    // Inicializar Firebase (compat)
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    // Manejar formulario
-    const form = document.getElementById("loanForm");
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const nombre = document.getElementById("nombre").value.trim();
-      const monto = parseInt(document.getElementById("monto").value);
-      const plazo = parseInt(document.getElementById("plazo").value);
-
-      if (!nombre || isNaN(monto) || isNaN(plazo)) {
-        alert("Completa todos los campos correctamente.");
-        return;
-      }
-
-      const nuevoPrestamo = {
-        nombre,
-        monto,
-        plazo,
-        fecha: new Date().toISOString(),
-        estado: "Activo"
-      };
-
-      db.ref("prestamos").push(nuevoPrestamo)
-        .then(() => {
-          alert("✅ Préstamo registrado exitosamente.");
-          form.reset();
-        })
-        .catch((err) => alert("❌ Error: " + err.message));
-    });
-  </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const authError = document.getElementById('authError');
+            
+            // Credenciales fijas
+            const FIXED_CREDENTIALS = {
+                username: "super",
+                password: "credito"
+            };
+            
+            // Configurar login
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                // Validar credenciales
+                if (username === FIXED_CREDENTIALS.username && password === FIXED_CREDENTIALS.password) {
+                    authError.style.display = 'none';
+                    // Redirigir al dashboard
+                    window.location.href = "dashboard.html";
+                } else {
+                    authError.style.display = 'block';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
