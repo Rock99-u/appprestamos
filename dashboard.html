@@ -25,6 +25,20 @@
         }
     </style>
 </head>
+<script>
+    // Verificar autenticación al cargar
+    document.addEventListener('DOMContentLoaded', function() {
+        if (localStorage.getItem('isAuthenticated') !== 'true') {
+            window.location.href = 'index.html';
+        }
+    });
+
+    // Función para cerrar sesión
+    function logout() {
+        localStorage.removeItem('isAuthenticated');
+        window.location.href = 'index.html';
+    }
+</script>
 <body>
     <div class="app-container">
         <!-- Sidebar -->
