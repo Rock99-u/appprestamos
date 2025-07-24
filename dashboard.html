@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Préstamos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --revolut-blue: #0075FF;
+            --revolut-dark-blue: #0065E0;
+            --revolut-light-blue: #E5F1FF;
+            --revolut-gray: #F5F7FA;
+            --revolut-dark-gray: #6B7785;
+            --revolut-black: #1A1A1A;
+            --revolut-white: #FFFFFF;
+            --revolut-border-radius: 12px;
+            --revolut-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--revolut-gray);
+            color: var(--revolut-black);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--revolut-white);
+            box-shadow: var(--revolut-box-shadow);
+            padding: 30px 0;
+        }
+        
+        .logo {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .logo h2 {
+            color: var(--revolut-blue);
+            margin: 0;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .nav-item {
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .nav-item:hover {
+            background-color: var(--revolut-light-blue);
+        }
+        
+        .nav-item.active {
+            background-color: var(--revolut-light-blue);
+            border-left: 3px solid var(--revolut-blue);
+        }
+        
+        .nav-item i {
+            margin-right: 15px;
+            color: var(--revolut-dark-gray);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: var(--revolut-blue);
+            margin: 0;
+            font-size: 28px;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-profile span {
+            font-weight: 500;
+        }
+        
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--revolut-blue);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+        }
+        
+        /* Dashboard Widgets */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background-color: var(--revolut-white);
+            border-radius: var(--revolut-border-radius);
+            box-shadow: var(--revolut-box-shadow);
+            padding: 25px;
+        }
+        
+        .stat-card h3 {
+            color: var(--revolut-dark-gray);
+            font-size: 14px;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card p {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .stat-card .value {
+            color: var(--revolut-blue);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <h2>Préstamos</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active">
+                    <i>📊</i> Dashboard
+                </li>
+                <li class="nav-item" onclick="location.href='prestamos/nuevo.html'">
+                    <i>📝</i> Nuevo Préstamo
+                </li>
+                <li class="nav-item" onclick="location.href='clientes/'">
+                    <i>👥</i> Clientes
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Dashboard</h1>
+                <div class="user-profile">
+                    <span>Usuario: super</span>
+                    <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Préstamos Activos</h3>
+                    <p class="value" id="activeLoans">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Clientes Registrados</h3>
+                    <p class="value" id="totalClients">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Prestado</h3>
+                    <p class="value" id="totalAmount">₲0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function logout() {
+            // Eliminar credenciales de sesión
+            sessionStorage.removeItem('loggedIn');
+            // Redirigir al login
+            window.location.href = '../index.html';
+        }
+        
+        // Verificar autenticación al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!sessionStorage.getItem('loggedIn')) {
+                window.location.href = '../index.html';
+            }
+            
+            // Aquí iría la carga de datos reales
+            document.getElementById('activeLoans').textContent = '12';
+            document.getElementById('totalClients').textContent = '25';
+            document.getElementById('totalAmount').textContent = '₲45.000.000';
+        });
+    </script>
+</body>
+</html>
