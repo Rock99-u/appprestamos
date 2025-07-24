@@ -40,36 +40,217 @@
             max-width: 500px;
         }
         
-        /* ... (otros estilos se mantienen igual) ... */
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
         
+        .form-header h1 {
+            color: var(--revolut-blue);
+            font-weight: 600;
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--revolut-dark-gray);
+            margin-bottom: 8px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #E0E4E8;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--revolut-blue);
+            box-shadow: 0 0 0 2px var(--revolut-light-blue);
+        }
+        
+        .btn {
+            background-color: var(--revolut-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 24px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s ease;
+        }
+        
+        .btn:hover {
+            background-color: var(--revolut-dark-blue);
+        }
+        
+        .form-footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--revolut-dark-gray);
+        }
+        
+        .currency-input {
+            position: relative;
+        }
+        
+        .currency-input span {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--revolut-dark-gray);
+            font-weight: 500;
+        }
+        
+        .currency-input input {
+            padding-left: 30px;
+        }
+        
+        .percentage-input {
+            position: relative;
+        }
+        
+        .percentage-input span {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--revolut-dark-gray);
+            font-weight: 500;
+        }
+        
+        .percentage-input input {
+            padding-right: 30px;
+        }
+        
+        .readonly-field {
+            background-color: var(--revolut-gray);
+            color: var(--revolut-dark-gray);
+        }
+        
+        .input-hint {
+            font-size: 12px;
+            color: var(--revolut-dark-gray);
+            margin-top: 4px;
+        }
+        
+        .error-message {
+            color: #FF3B30;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <!-- El contenido del formulario se mantiene igual -->
-    
+    <div class="form-container">
+        <div class="form-header">
+            <h1>Nuevo Préstamo</h1>
+        </div>
+        
+        <form id="loanForm">
+            <div class="form-group">
+                <label for="clientName">Nombre del Cliente</label>
+                <input type="text" id="clientName" class="form-control" placeholder="Ingrese el nombre completo" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="saleDate">Fecha de venta</label>
+                <input type="date" id="saleDate" class="form-control" required>
+                <div class="input-hint">Fecha en que se realizó el préstamo (puede ser en el pasado)</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="dueDate">Vencimiento</label>
+                <input type="date" id="dueDate" class="form-control" required>
+                <div class="input-hint">Fecha de pago del préstamo</div>
+                <div class="error-message" id="dueDateError">La fecha de vencimiento debe ser posterior a la fecha de venta</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="loanAmount">Monto de préstamo</label>
+                <div class="currency-input">
+                    <span>₲</span>
+                    <input type="text" id="loanAmount" class="form-control" placeholder="500.000" required>
+                </div>
+                <div class="input-hint">Ingrese el monto sin decimales (ej: 1.000.000)</div>
+                <div class="error-message" id="loanAmountError">Ingrese un monto válido</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="interestRate">Interés (%)</label>
+                <div class="percentage-input">
+                    <input type="number" id="interestRate" class="form-control" placeholder="0" step="0.1" min="0" required>
+                    <span>%</span>
+                </div>
+                <div class="error-message" id="interestRateError">Ingrese un porcentaje válido</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="totalAmount">Total a Pagar</label>
+                <div class="currency-input">
+                    <span>₲</span>
+                    <input type="text" id="totalAmount" class="form-control readonly-field" placeholder="0" readonly>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="termDays">Plazo (En Días)</label>
+                <input type="number" id="termDays" class="form-control readonly-field" placeholder="0" readonly>
+            </div>
+            
+            <button type="submit" class="btn">Registrar Préstamo</button>
+        </form>
+        
+        <div class="form-footer">
+            Sistema seguro de registro de préstamos
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Función para cerrar el teclado al tocar fuera
+            // Elementos del formulario
+            const form = document.getElementById('loanForm');
+            const saleDate = document.getElementById('saleDate');
+            const dueDate = document.getElementById('dueDate');
+            const loanAmount = document.getElementById('loanAmount');
+            const interestRate = document.getElementById('interestRate');
+            const totalAmount = document.getElementById('totalAmount');
+            const termDays = document.getElementById('termDays');
+            
+            // Elementos de error
+            const dueDateError = document.getElementById('dueDateError');
+            const loanAmountError = document.getElementById('loanAmountError');
+            const interestRateError = document.getElementById('interestRateError');
+            
+            // Función para cerrar teclado al tocar fuera
             function setupDismissKeyboard() {
-                // Cerrar teclado al hacer tap en cualquier parte del cuerpo
-                document.body.addEventListener('touchstart', function(e) {
-                    // Si el elemento tocado no es un input o textarea
+                document.addEventListener('touchstart', function(e) {
                     if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
-                        // Desenfocar el elemento activo
                         if (document.activeElement && document.activeElement.blur) {
                             document.activeElement.blur();
                         }
-                        
-                        // Alternativa para iOS
-                        const inputs = document.querySelectorAll('input, textarea');
-                        inputs.forEach(input => {
-                            input.blur();
-                        });
                     }
                 });
                 
-                // También funciona para clicks en dispositivos con mouse
-                document.body.addEventListener('mousedown', function(e) {
+                document.addEventListener('mousedown', function(e) {
                     if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
                         if (document.activeElement && document.activeElement.blur) {
                             document.activeElement.blur();
@@ -78,10 +259,144 @@
                 });
             }
             
-            // Inicializar la función de cierre de teclado
+            // Inicializar función de cierre de teclado
             setupDismissKeyboard();
             
-            // ... (el resto del código JavaScript se mantiene igual) ...
+            // Formatear número con separador de miles
+            function formatNumber(num) {
+                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            }
+            
+            // Convertir string formateado a número
+            function parseFormattedNumber(str) {
+                return parseInt(str.replace(/\./g, '')) || 0;
+            }
+            
+            // Calcular días entre fechas
+            function calculateDaysBetweenDates(startDate, endDate) {
+                const oneDay = 24 * 60 * 60 * 1000;
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                return Math.round(Math.abs((end - start) / oneDay));
+            }
+            
+            // Calcular total a pagar
+            function calculateTotal() {
+                const amount = parseFormattedNumber(loanAmount.value);
+                const rate = parseFloat(interestRate.value) || 0;
+                const interest = Math.round(amount * (rate / 100));
+                const total = amount + interest;
+                totalAmount.value = formatNumber(total);
+            }
+            
+            // Calcular plazo en días
+            function calculateTermDays() {
+                if (saleDate.value && dueDate.value) {
+                    const startDate = new Date(saleDate.value);
+                    const endDate = new Date(dueDate.value);
+                    
+                    if (endDate < startDate) {
+                        dueDateError.style.display = 'block';
+                        termDays.value = '';
+                        return;
+                    } else {
+                        dueDateError.style.display = 'none';
+                    }
+                    
+                    const days = calculateDaysBetweenDates(saleDate.value, dueDate.value);
+                    termDays.value = days;
+                } else {
+                    termDays.value = '';
+                }
+            }
+            
+            // Validar fechas
+            function validateDates() {
+                const saleDateValue = new Date(saleDate.value);
+                const dueDateValue = new Date(dueDate.value);
+                
+                if (dueDate.value && saleDate.value && dueDateValue < saleDateValue) {
+                    dueDateError.style.display = 'block';
+                } else {
+                    dueDateError.style.display = 'none';
+                }
+                
+                calculateTermDays();
+            }
+            
+            // Formatear input de monto mientras se escribe
+            loanAmount.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/[^\d]/g, '');
+                
+                if (value) {
+                    value = parseInt(value).toString();
+                    value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                }
+                
+                e.target.value = value;
+                
+                if (value && parseFormattedNumber(value) <= 0) {
+                    loanAmountError.style.display = 'block';
+                } else {
+                    loanAmountError.style.display = 'none';
+                }
+                
+                calculateTotal();
+            });
+            
+            // Validar tasa de interés
+            interestRate.addEventListener('input', function() {
+                if (interestRate.value && parseFloat(interestRate.value) < 0) {
+                    interestRateError.style.display = 'block';
+                } else {
+                    interestRateError.style.display = 'none';
+                }
+                calculateTotal();
+            });
+            
+            // Event listeners para fechas
+            saleDate.addEventListener('change', validateDates);
+            dueDate.addEventListener('change', validateDates);
+            
+            // Configurar evento de envío del formulario
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                validateDates();
+                calculateTotal();
+                
+                const errors = document.querySelectorAll('.error-message[style="display: block;"]');
+                if (errors.length > 0) {
+                    alert('Por favor corrija los errores antes de enviar');
+                    return;
+                }
+                
+                const loanData = {
+                    clientName: document.getElementById('clientName').value,
+                    saleDate: saleDate.value,
+                    dueDate: dueDate.value,
+                    loanAmount: parseFormattedNumber(loanAmount.value),
+                    interestRate: parseFloat(interestRate.value),
+                    totalAmount: parseFormattedNumber(totalAmount.value),
+                    termDays: parseInt(termDays.value),
+                    createdAt: new Date().toISOString()
+                };
+                
+                console.log('Datos para Firebase:', loanData);
+                alert(`Préstamo registrado correctamente:
+Cliente: ${loanData.clientName}
+Monto: ₲${formatNumber(loanData.loanAmount)}
+Total a pagar: ₲${formatNumber(loanData.totalAmount)}
+Plazo: ${loanData.termDays} días`);
+                
+                form.reset();
+                totalAmount.value = '';
+                termDays.value = '';
+            });
+            
+            // Inicializar cálculos
+            calculateTotal();
+            calculateTermDays();
         });
     </script>
 </body>
